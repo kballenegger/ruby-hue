@@ -5,7 +5,7 @@ require 'hue/version'
 
 Gem::Specification.new do |gem|
   gem.name          = 'ruby-hue'
-  gem.version       = .::VERSION
+  gem.version       = Hue::VERSION
   gem.authors       = ['Kenneth Ballenegger']
   gem.email         = ['kenneth@ballenegger.com']
   gem.description   = %q{Control Philips Hue}
