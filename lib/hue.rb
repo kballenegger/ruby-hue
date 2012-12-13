@@ -63,6 +63,7 @@ class Hue
 
   def each_light
     lights.each {|k,v| yield k }
+    nil
   end
 
   def wait_for_rate_limit
