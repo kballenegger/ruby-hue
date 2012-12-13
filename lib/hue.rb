@@ -57,7 +57,33 @@ class Hue
     @state = state
   end
 
+  def lights
+    @state['lights']
+  end
+
+  def each_light
+    lights.each {|k,v| yield k }
+  end
+
+  def wait_for_rate_limit
+    @last_request_times ||= []
+    while @last_request_times.count > 25
+      @last_request_times.select! {|t| Time.now - t < 1 }
+      sleep 0.1
+    end
+    @last_request_times << Time.now
+  end
+
   def write(light, state)
+    wait_for_rate_limit
     request(:put, "/lights/#{light}/state", state)
+  end
+
+  def off(light)
+    write(light, :on => false)
+  end
+
+  def on(light)
+    write(light, :on => true)
   end
 end
