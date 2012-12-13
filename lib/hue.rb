@@ -98,6 +98,6 @@ class Hue
   # .l, and .s.
   def set_color(light, color)
     hsl = color.to_hsl
-    write(light, bri: (hsl.l * 255).to_i, sat: (hsl.s * 255).to_i, hue: (hsl.h * 182).to_i)
+    write(light, bri: (hsl.l * 255).to_i, sat: (hsl.s * 255).to_i, hue: (hsl.h * 360 * 182).to_i)
   end
 end
