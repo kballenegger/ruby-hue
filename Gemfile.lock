@@ -53,4 +53,5 @@ PLATFORMS
 
 DEPENDENCIES
   curb
+  nokogiri
   upnp!
