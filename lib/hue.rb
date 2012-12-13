@@ -2,6 +2,8 @@
 require 'curb'
 require 'upnp/ssdp'
 require 'nokogiri'
+require 'json'
+require 'digest/sha1'
 
 class Hue
 
@@ -21,9 +23,31 @@ class Hue
   
   def initialize(opts = {})
     @ip = opts[:ip] || self.class.discover_ip
+    @client = opts[:client] || 'ruby-hue'
+    @username = opts[:username] || Digest::SHA1.hexdigest(`hostname`.strip)
   end
 
-  def ip
-    @ip
+  def request(method, path, body = {})
+    url = "http://#{@ip}/api/#{@username}#{path}"
+    _request(method, url, body)
+  end
+
+  def _request(method, url, body = {})
+    body_str = body.to_json
+    case method
+    when :get
+      r = Curl.get(url)
+    when :post
+      r = Curl.post(url, body.to_json)
+    when :put
+      r = Curl.put(url, body.to_json)
+    else
+      raise
+    end
+    JSON.parse(r.body_str)
+  end
+
+  def authorize
+    _request(:post, "http://#{@ip}/api/", :devicetype => @client, :username => @username)
   end
 end
