@@ -89,6 +89,6 @@ class Hue
   end
 
   def cycle_thru_colors(sleep_between_steps = 1)
-    (0..65535).step(1000).each {|n| self.each_light {|id| self.write(id, :hue => n) }; sleep sleep_between_steps } while true
+    (0..65535).step(5000).each {|n| self.each_light {|id| self.write(id, :hue => n) }; sleep sleep_between_steps } while true
   end
 end
