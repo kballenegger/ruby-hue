@@ -4,6 +4,7 @@ require 'upnp/ssdp'
 require 'nokogiri'
 require 'json'
 require 'digest/sha1'
+require 'color'
 
 class Hue
 
@@ -90,5 +91,13 @@ class Hue
 
   def cycle_thru_colors(sleep_between_steps = 1)
     (0..65535).step(5000).each {|n| self.each_light {|id| self.write(id, :hue => n) }; sleep sleep_between_steps } while true
+  end
+
+  # color should be a color object from the color gem
+  # it must implement to_hsl, which must return something that implements .h,
+  # .l, and .s.
+  def set_color(light, color)
+    hsl = color.to_hsl
+    write(light, bri: (hsl.l * 255).to_i, sat: (hsl.s * 255).to_i, hue: (hsl.h * 182).to_i)
   end
 end
