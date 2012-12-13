@@ -100,4 +100,10 @@ class Hue
     hsl = color.to_hsl
     write(light, bri: (hsl.l * 255).to_i, sat: (hsl.s * 255).to_i, hue: (hsl.h * 360 * 182).to_i)
   end
+
+  def set_bright_color(light, color)
+    color = color.to_hsl
+    color.l = 1
+    set_color(light, color)
+  end
 end
