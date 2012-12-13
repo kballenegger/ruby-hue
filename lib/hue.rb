@@ -50,4 +50,14 @@ class Hue
   def authorize
     _request(:post, "http://#{@ip}/api/", :devicetype => @client, :username => @username)
   end
+
+  def poll_state
+    state = request(:get, '/')
+    raise unless state['lights'] # poor man's way of checking for success
+    @state = state
+  end
+
+  def write(light, state)
+    request(:put, "/lights/#{light}/state", state)
+  end
 end
