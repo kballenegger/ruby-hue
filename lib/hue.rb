@@ -1,0 +1,3 @@
+
+module Hue
+end
