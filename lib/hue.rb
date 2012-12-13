@@ -106,4 +106,27 @@ class Hue
     color.l = 1
     set_color(light, color)
   end
+
+  def cycle_thru_color_arr(colors, sleep_between_steps = 1)
+    while true
+      each_light {|l| self.set_bright_color(l, colors.first)}
+      colors << colors.shift
+      sleep sleep_between_steps
+    end
+  end
+
+  def all_lights
+    HueAllLightsProxy.new(self)
+  end
+
+end
+
+class HueAllLightsProxy
+  def method_missing(method, *args)
+    @h.each_light {|l| @h.send(method, l, *args) }
+  end
+
+  def initialize(hue)
+    @h = hue
+  end
 end
