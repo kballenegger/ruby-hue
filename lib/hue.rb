@@ -18,7 +18,7 @@ class Hue
       return false unless name
       name.text =~ /^Philips hue/
     end
-    raise unless valid_location
+    raise 'no hue found on this network' unless valid_location
     /(([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])/.match(valid_location)[0]
   end
   
