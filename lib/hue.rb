@@ -266,7 +266,9 @@ module Hue
     end
 
     def self.cycle_thru_colors(hue, sleep_between_steps = 1)
-      (0..65535).step(5000).each {|n| self.all_lights.write(id, hue: n); sleep sleep_between_steps } while true
+      (0..65535).step(5000).each do |n|
+        self.all_lights.write(id, hue: n); sleep sleep_between_steps 
+      end while true
     end
 
   end

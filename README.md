@@ -1,6 +1,7 @@
 # Hue
 
-`ruby-hue` is a simple Ruby library and binary for manipulating the Philips Hue lighting system.
+`ruby-hue` is a simple Ruby library and binary for manipulating the Philips Hue
+lighting system.
 
 ## Examples
 
@@ -8,11 +9,11 @@
 
 ```ruby
 require 'hue'
-h = Hue.new # make use of auto-discovery
+h = Hue::Hue.new # make use of auto-discovery
 
 h.poll_state # fetch and print system status
 
-h.set_bright_color(Color::RGB::Red)
+h.set_bright_color(1, Color::RGB::Red)
 
 h.all_lights.write bri: 255, hue: 40000, sat: 200
 
@@ -22,6 +23,11 @@ h.all_lights.write bri: 255, hue: 40000, sat: 200
   sleep 0.15
 end
 ```
+
+## Documentation
+
+It is highly recommended that you read the inline comments in `lib/hue.rb`. The
+module is very thoroughly documented.
 
 ## Credit
 
