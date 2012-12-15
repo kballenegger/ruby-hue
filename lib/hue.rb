@@ -150,10 +150,13 @@ module Hue
     #                      can be derived from (degrees * 182)
     #   :bri            => "brightness" in the range (0..255)
     #   :sat            => "saturation" in the range (0..255)
-    #   :alert          => triggers a flash to the given color, instead of
-    #                      a permanent change, when set to `true`
-    #   :lalert         => same as above, except this is a constant flashing,
-    #                      insead of a one time trigger
+    #   :alert          => when set, triggers alert behavior. options:
+    #                      :select
+    #                         triggers a flash to the given color, instead of
+    #                         a permanent change, when set to `true`
+    #                      :lselect
+    #                         same as above, except this is a constant flashing,
+    #                         insead of a one time trigger
     #   :transitiontime => an Integer representing the "transition time," ie. the
     #                      amount of time over which the color fade will occur.
     #                      this is measured in tenths of seconds. a value of
@@ -187,12 +190,12 @@ module Hue
     # color must implement to_hsl, which must return an object that implements
     # .h, .l, and .s. These methods are expected to return floats in (0.0..1.1)
     #
-    def set_color(light, color)
+    def set_color(light, color, opts={})
       hsl = color.to_hsl
-      write(light,
-            bri: (hsl.l * 255).to_i,
-            sat: (hsl.s * 255).to_i,
-            hue: (hsl.h * 360 * 182).to_i)
+      opts = opts.merge(bri: (hsl.l * 255).to_i,
+                        sat: (hsl.s * 255).to_i,
+                        hue: (hsl.h * 360 * 182).to_i)
+      write(light, opts)
     end
 
 
@@ -201,10 +204,10 @@ module Hue
     # be expected to have full brightness. But with a known hue & saturation,
     # it's often desirable to have full brightness. This method uses `bri: 255`
     #
-    def set_bright_color(light, color)
+    def set_bright_color(light, color, opts={})
       color = color.to_hsl
       color.l = 1
-      set_color(light, color)
+      set_color(light, color, opts)
     end
 
 
@@ -257,6 +260,7 @@ module Hue
   # some very neat effects.
   #
   module Presets
+
     def self.cycle_thru_color_arr(hue, colors, sleep_between_steps = 1)
       colors = colors.dup
       loop do
@@ -272,6 +276,25 @@ module Hue
       end while true
     end
 
+    # --- even more specific
+
+    def self.police_lights(hue)
+      colors = [Color::RGB::Blue, Color::RGB::Red]
+      loop do
+        hue.all_lights.set_bright_color(colors.first, transitiontime: 0)
+        colors << colors.shift
+        sleep 0.1
+      end
+    end
+
+    def self.strobe(hue)
+      hue.all_lights.write bri: 0
+      loop do
+        hue.all_lights.write(bri: 255,
+                             alert: :select,
+                             transitiontime: 0)
+      end
+    end
   end
 
 
