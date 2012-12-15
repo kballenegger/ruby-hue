@@ -65,9 +65,9 @@ module Hue
     # the base station forever. It's a one-time operation.
     #
     # #authorize requires manual interation: the method must be called, after
-    # which somebody must *physically* press the button on the base station,
-    # after which the method must be called again and an error message will be
-    # returned.
+    # which somebody must *physically* press the button on the base station.
+    # Once that is done, the method must be called again and, this time,
+    # a success confirmation message will be returned. 
     #
     def authorize
       _request(:post, "http://#{@ip}/api/", devicetype: @client, username: @username)
