@@ -258,8 +258,9 @@ module Hue
   #
   module Presets
     def self.cycle_thru_color_arr(hue, colors, sleep_between_steps = 1)
-      while true
-        each_light {|l| hue.set_bright_color(l, colors.first)}
+      colors = colors.dup
+      loop do
+        hue.each_light {|l| hue.set_bright_color(l, colors.first)}
         colors << colors.shift
         sleep sleep_between_steps
       end
@@ -267,7 +268,7 @@ module Hue
 
     def self.cycle_thru_colors(hue, sleep_between_steps = 1)
       (0..65535).step(5000).each do |n|
-        self.all_lights.write(id, hue: n); sleep sleep_between_steps 
+        hue.all_lights.write(hue: n); sleep sleep_between_steps 
       end while true
     end
 
