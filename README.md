@@ -17,7 +17,7 @@ h.set_bright_color(1, Color::RGB::Red)
 
 h.all_lights.write bri: 255, hue: 40000, sat: 200
 
-# switch between blue and red
+# alternate between blue and red
 (1..1.0/0).each do |n|
   h.all_lights.write hue: n.even? ? 0 : 248 * 182, transitiontime: 1
   sleep 0.15
