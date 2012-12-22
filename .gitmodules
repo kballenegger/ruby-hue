@@ -1,6 +1,6 @@
 [submodule "upnp"]
 	path = upnp
-	url = https://github.com/turboladen/upnp.git
+	url = https://github.com/kballenegger/upnp.git
 [submodule "httpi"]
 	path = httpi
 	url = https://github.com/turboladen/httpi.git
