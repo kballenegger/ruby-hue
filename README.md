@@ -3,6 +3,7 @@
 `ruby-hue` is a simple Ruby library and binary for manipulating the Philips Hue
 lighting system.
 
+
 ## Examples
 
 (In a `pry` shell... for awesomeness)
@@ -24,10 +25,33 @@ h.all_lights.write bri: 255, hue: 40000, sat: 200
 end
 ```
 
+
 ## Documentation
 
 It is highly recommended that you read the inline comments in `lib/hue.rb`. The
 module is very thoroughly documented.
+
+
+## Installation & Requirements
+
+Make sure you have the following packages installed (including devel versions):
+
+    libcurl, libxml
+
+You're also going to need to install the `upnp` gem. Unfortunately it is not yet released publicly, so I have included it here as a submodule dependency. The easiest way to get setup right now would be:
+
+```bash
+git clone $repo
+git submodule init
+git submodule update
+cd httpi && bundle install && rake install && cd ..
+cd upnp && bundle install && rake install && cd ..
+bundle install
+rake install
+```
+
+`gem install ruby-hue` will only work when `upnp` has been successfully installed.
+
 
 ## Credit
 
