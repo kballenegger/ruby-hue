@@ -41,7 +41,7 @@ Make sure you have the following packages installed (including devel versions):
 You're also going to need to install the `upnp` gem. Unfortunately it is not yet released publicly, so I have included it here as a submodule dependency. The easiest way to get setup right now would be:
 
 ```bash
-git clone $repo
+git clone https://github.com/kballenegger/ruby-hue.git && cd ruby-hue
 git submodule init
 git submodule update
 cd httpi && bundle install && rake install && cd ..
