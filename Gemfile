@@ -7,3 +7,8 @@ gem 'color'
 
 gem 'upnp', path: './upnp'
 
+group :test do
+  gem 'rspec'
+  gem 'webmock'
+end
+

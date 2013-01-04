@@ -13,6 +13,7 @@ module Hue
   #
   class Hue
 
+
     # Hue.discover_ip is a convenience class method that will scan the network
     # and attempt to find the Philips base station. It may take ~5s to execute.
     #
