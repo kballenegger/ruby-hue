@@ -3,6 +3,34 @@ require 'spec_helper'
 require 'hue'
 
 describe Hue::Hue do
+  
+  describe "when managing the IP address" do
+    
+    let(:yml_file_data) {'ip: 192.168.0.3'}
+    
+    it "should not the read the IP address from cache if the config file does not exist" do
+      File.stub(:exists?).and_return(false)
+      File.should_not_receive(:open)
+      
+      Hue::Hue.ip_from_cache.should be_nil
+    end
+    
+    it "should the read the IP address from cache if the config file does exist" do
+      File.stub(:exists?).and_return(true)
+      File.stub(:read) { StringIO.new(yml_file_data) }
+      
+      Hue::Hue.ip_from_cache.should == '192.168.0.3'
+    end
+    
+    it "should the write the IP address to cache" do
+      file = mock('file')
+      File.should_receive(:open).and_yield(file)
+      file.should_receive(:write).with("---\n:ip: 192.168.0.4\n")
+      
+      Hue::Hue.ip_to_cache('192.168.0.4')
+    end
+  end
+  
   before(:each) do
     success_json = [{"success"=>{"/lights"=>true}}].to_json
     stub_request(:any, /^http:\/\/(\d+\.?){4}\/.*/).to_return(:body => success_json)
@@ -12,23 +40,36 @@ describe Hue::Hue do
   
   it "should call :discover_ip" do
     Hue::Hue.should_receive(:discover_ip)
+    
+    Hue::Hue.new
+  end
+  
+  it "should not call :discover_ip if IP is loaded from config file" do
+    Hue::Hue.stub(:ip_from_cache).and_return("192.168.0.1")
+    Hue::Hue.should_not_receive(:discover_ip)
+    
     Hue::Hue.new
   end
   
   it "should not call :discover_ip if :ip is provided" do
     Hue::Hue.should_not_receive(:discover_ip)
+    
     Hue::Hue.new(ip: "192.168.0.2")
   end
   
   it "should call :hexdigest" do
     Digest::SHA1.should_receive(:hexdigest)
+    
     Hue::Hue.new
   end
   
   it "should not call :hexdigest if :username is provided" do
     Digest::SHA1.should_not_receive(:hexdigest)
+    
     Hue::Hue.new(username: "some_random_hex")
   end
+
+  
 
   describe "when requesting the hue API" do
     
