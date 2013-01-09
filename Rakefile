@@ -1,3 +1,4 @@
+require 'bundler/gem_tasks'
 #
 # The rspec tasks
 #
