@@ -5,6 +5,7 @@ require 'nokogiri'
 require 'json'
 require 'digest/sha1'
 require 'color'
+require 'yaml'
 
 
 module Hue
@@ -13,7 +14,7 @@ module Hue
   #
   class Hue
     
-    CONFIG_FILE = '#{Dir.home}/.ruby-hue.yml'
+    CONFIG_FILE = "#{Dir.home}/.ruby-hue.yml"
 
 
     # Hue.discover_ip is a convenience class method that will scan the network
@@ -39,12 +40,15 @@ module Hue
     
     
     def self.ip_from_cache
-      data = File.exists?(CONFIG_FILE) ? YAML::load(File.read(CONFIG_FILE)) : {}
-      data["ip"]
+      config_file = "#{Dir.home}/.ruby-hue.yml"
+
+      data = File.exists?(config_file) ? YAML::load(File.read(config_file)) : {}
+      data[:ip] if data
     end
     
     def self.ip_to_cache(ip)
-      File.open CONFIG_FILE, "w" do |file|
+      File.open "#{Dir.home}/.ruby-hue.yml", "w" do |file|
+        YAML::ENGINE.yamler='syck'
         file.write YAML::dump({ip: ip})
       end
     end
