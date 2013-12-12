@@ -312,6 +312,10 @@ module Hue
     def initialize(hue)
       @h = hue
     end
+
+    def methods
+      @h.methods
+    end
   end
 
   class HuePresetsProxy
@@ -321,6 +325,10 @@ module Hue
 
     def initialize(hue)
       @h = hue
+    end
+
+    def methods
+      Presets.methods
     end
   end
 
