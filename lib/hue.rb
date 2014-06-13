@@ -243,14 +243,17 @@ module Hue
       case method
       when :get
         r = Curl.get(url) do |r|
+                r.setops(Curl::CURLOPT_NOSIGNAL, 1)
                 r.timeout = 2
         end
       when :post
         r = Curl.post(url, body.to_json) do |r|
+                r.setops(Curl::CURLOPT_NOSIGNAL, 1) 
                 r.timeout = 2
         end
       when :put
         r = Curl.put(url, body.to_json) do |r|
+                r.setops(Curl::CURLOPT_NOSIGNAL, 1)
                 r.timeout = 2
         end
       else
