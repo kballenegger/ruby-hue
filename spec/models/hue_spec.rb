@@ -25,7 +25,7 @@ describe Hue::Hue do
     it "should the write the IP address to cache" do
       file = mock('file')
       File.should_receive(:open).and_yield(file)
-      file.should_receive(:write).with("--- \n:ip: 192.168.0.4\n")
+      file.should_receive(:write).with("---\n:ip: 192.168.0.4\n")
       
       Hue::Hue.ip_to_cache('192.168.0.4')
     end
