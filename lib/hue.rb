@@ -5,6 +5,7 @@ require 'nokogiri'
 require 'json'
 require 'digest/sha1'
 require 'color'
+require 'yaml'
 
 
 module Hue
@@ -12,6 +13,8 @@ module Hue
   # Hue is a class that can interact with and control a Philips Hue base station.
   #
   class Hue
+    
+    CONFIG_FILE = "#{Dir.home}/.ruby-hue.yml"
 
 
     # Hue.discover_ip is a convenience class method that will scan the network
@@ -28,7 +31,26 @@ module Hue
         name.text =~ /^Philips hue/
       end
       raise 'no hue found on this network' unless valid_location
-      /(([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])/.match(valid_location)[0]
+      
+      ip = /(([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])\.){3}([01]?[0-9][0-9]?|2[0-4][0-9]|25[0-5])/.match(valid_location)[0]
+      
+      ip_to_cache(ip)
+      ip
+    end
+    
+    
+    def self.ip_from_cache
+      config_file = "#{Dir.home}/.ruby-hue.yml"
+
+      data = File.exists?(config_file) ? YAML::load(File.read(config_file)) : {}
+      data[:ip] if data
+    end
+    
+    def self.ip_to_cache(ip)
+      File.open "#{Dir.home}/.ruby-hue.yml", "w" do |file|
+        YAML::ENGINE.yamler='syck'
+        file.write YAML::dump({ip: ip})
+      end
     end
 
 
@@ -44,7 +66,7 @@ module Hue
     #                     defaults to the SHA1 hex digest of the hostname 
     #
     def initialize(opts = {})
-      @ip = opts[:ip] || self.class.discover_ip
+      @ip = opts[:ip] || self.class.ip_from_cache || self.class.discover_ip
       @client = opts[:client] || 'ruby-hue'
       @username = opts[:username] || Digest::SHA1.hexdigest(`hostname`.strip)
     end
