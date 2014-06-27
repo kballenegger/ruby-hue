@@ -1,6 +1,6 @@
 
 require 'curb'
-require 'upnp/ssdp'
+require 'playful/ssdp'
 require 'nokogiri'
 require 'json'
 require 'digest/sha1'
@@ -18,8 +18,8 @@ module Hue
     # and attempt to find the Philips base station. It may take ~5s to execute.
     #
     def self.discover_ip
-      UPnP::SSDP.log = false # get rid of this pesky debug logging!
-      services = UPnP::SSDP.search('urn:schemas-upnp-org:device:basic:1').map {|s| s[:location] }
+      playful::SSDP.log = false # get rid of this pesky debug logging!
+      services = playful::SSDP.search('urn:schemas-upnp-org:device:basic:1').map {|s| s[:location] }
       valid_location = services.find do |l|
         xml = Curl.get(l).body_str
         doc = Nokogiri::XML(xml)
@@ -239,18 +239,29 @@ module Hue
 
     def _request(method, url, body = {})
       body_str = body.to_json
+
       case method
       when :get
-        r = Curl.get(url)
+        r = Curl.get(url) do |r|
+                r.setopt(Curl::CURLOPT_NOSIGNAL, 1)
+                r.timeout = 2
+        end
       when :post
-        r = Curl.post(url, body.to_json)
+        r = Curl.post(url, body.to_json) do |r|
+                r.setopt(Curl::CURLOPT_NOSIGNAL, 1) 
+                r.timeout = 2
+        end
       when :put
-        r = Curl.put(url, body.to_json)
+        r = Curl.put(url, body.to_json) do |r|
+                r.setopt(Curl::CURLOPT_NOSIGNAL, 1)
+                r.timeout = 2
+        end
       else
         raise
       end
       JSON.parse(r.body_str)
     end
+
 
 
   end
