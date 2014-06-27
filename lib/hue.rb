@@ -18,8 +18,8 @@ module Hue
     # and attempt to find the Philips base station. It may take ~5s to execute.
     #
     def self.discover_ip
-      playful::SSDP.log = false # get rid of this pesky debug logging!
-      services = playful::SSDP.search('urn:schemas-upnp-org:device:basic:1').map {|s| s[:location] }
+      LogSwitch.extender.log = false # get rid of this pesky debug logging!
+      services = Playful::SSDP.search('urn:schemas-upnp-org:device:basic:1').map {|s| s[:location] }
       valid_location = services.find do |l|
         xml = Curl.get(l).body_str
         doc = Nokogiri::XML(xml)
